@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CEX Stock Checker</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1></h1>
+    <form id="myForm" action="script.php" method="post">
+        <label for="inputData">CEX UK Stock Checker, enter the product page URL below</label>
+        <input type="text" id="inputData" name="inputData" placeholder="Enter CEX Product URL">
+        <input type="submit" id="submitBtn" name="submitBtn" value="Submit">
+    </form>
+    <!-- Overlay and loading spinner -->
+    <div class="overlay" id="overlay">
+        <div class="spinner">
+            Loading...
+        </div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCA5mkbJHRCZYgvhCk1bUPB92v7m-D9fHY&callback=initMap" async defer></script>
+    <script>
+        var map;
+        var infoWindow;
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 54.572062, lng: -362.601373},
+                zoom: 6
+            });
+
+            for (var i = 0; i < locations.length; i++) {
+                var location = locations[i];
+
+                if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
+                    var marker = new google.maps.Marker({
+                        position: {lat: location.latitude, lng: location.longitude},
+                        map: map,
+                        title: location.storeName,
+                        data: location
+                    });
+
+                    infoWindow = new google.maps.InfoWindow();
+
+                    marker.addListener('click', function() {
+                      // Close any existing info window
+                      infoWindow.close();
+
+                      // Set the content of the info window
+                      infoWindow = new google.maps.InfoWindow({
+                        content: '<h3 style="color: #3c3c3c;">' + this.data.storeName + '</h3>' +
+                                '<p style="color: #3c3c3c;">' + this.data.stock + '</p>'
+                      });
+
+                      // Open the info window on the marker
+                      infoWindow.open(map, this);
+                    });
+                } else {
+                    console.error('Invalid latitude or longitude:', location);
+                }
+            }
+        }
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            // Show overlay and loading spinner
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("submitBtn").disabled = true; // Disable submit button
+            // Make AJAX request to PHP script
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "test.php", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    // Hide overlay and loading spinner
+                    document.getElementById("overlay").style.display = "none";
+                    document.getElementById("submitBtn").disabled = false; // Enable submit button
+                    // Process PHP script response
+                    locations = JSON.parse(xhr.responseText);
+                    console.log(locations); // Print response to console
+                    if (locations !== null) {
+                        initMap()
+                    }
+                    // Update result on page
+                    // document.getElementById("result").textContent = xhr.responseText;
+                }
+            };
+            xhr.send(new FormData(event.target));
+        });
+    </script>
+    <!-- Result output element -->
+    <div id="map"></div> <!-- Map container element -->
+</body>
+</html>

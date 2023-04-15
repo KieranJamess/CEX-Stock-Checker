@@ -1,0 +1,66 @@
+body {
+    font-family: "Montserrat", sans-serif;
+    color: #f7f5ef;
+    background-color: rgb(59,68,75); /* Update the background color here */
+    margin: 0;
+    padding: 0;
+  }
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #27272780; /* Update the background color here */
+    z-index: 999;
+  }
+  
+  /* CSS for loading spinner */
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+  }
+  
+  #map {
+    height: 80vh; /* Set the height of the map container */
+    width: 100%; /* Set the width of the map container */
+    margin-top: 20px; /* Add margin to separate the map from the form */
+  }
+
+  #myForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+label, input, #submitBtn {
+    margin-bottom: 10px; /* Add some spacing between the form elements */
+    padding: 10px 20px;
+}
+
+input[type="submit"] {
+    margin-top: 10px; /* Add some spacing above the submit button */
+}
+
+#inputData {
+    background-color: #f7f5ef; /* Set background color */
+    color: #000; /* Set text color */
+    border: none; /* Remove border */
+    padding: 10px; /* Add padding */
+    width: 60%; /* Set width to 100% */
+}
+
+
+#submitBtn:hover {
+    background-color: #a1a1a1; /* Change background color on hover */
+    /* Add additional styles for hover effect */
+}
