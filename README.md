@@ -2,7 +2,7 @@
 
 The code for a site to query the CEX API to find stock of a specified product within the CEX infrastructure across the UK.
 
-At the time of writing this, it is hosted on [kdjames.co.uk](www.kdjames.co.uk). 
+At the time of writing this, it is hosted on [kdjames.co.uk](https://www.kdjames.co.uk). 
 
 ### Using
 
