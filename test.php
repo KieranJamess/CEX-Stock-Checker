@@ -29,9 +29,18 @@ $arr = array(
         "storeName" => "dd",
         "latitude" => 52.582259560888,
         "longitude" => -0.33251152227164,
-        "stock" => "1"
+        "stock" => "4+"
     )
 );
+
+// print_r($arr);
+
+foreach ($arr as &$array ) {
+     if ($array['stock'] === "4+") {
+        $array['stock'] = "5";
+     }
+}
+
 $arr= json_encode($arr, true);
 print_r($arr);
 ?>

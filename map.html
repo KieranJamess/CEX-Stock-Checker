@@ -7,56 +7,120 @@
 <body>
     <h1></h1>
     <form id="myForm" action="script.php" method="post">
-        <label for="inputData">CEX UK Stock Checker, enter the product page URL below</label>
+        <label for="inputData">CEX UK Stock Checker! Enter the product page URL below (3 minutes loading expected)</label>
         <input type="text" id="inputData" name="inputData" placeholder="Enter CEX Product URL">
         <input type="submit" id="submitBtn" name="submitBtn" value="Submit">
     </form>
+    <div id="statsContainer">
+        <p>Min stock (5 could be 5 or more): <span id="totalStock">0</span></p>
+        <p>Number of stores with stock count: <span id="numStoresWithStock">0</span></p>
+    </div>
     <!-- Overlay and loading spinner -->
     <div class="overlay" id="overlay">
         <div class="spinner">
             Loading...
         </div>
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCA5mkbJHRCZYgvhCk1bUPB92v7m-D9fHY&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCA5mkbJHRCZYgvhCk1bUPB92v7m-D9fHY&libraries=visualization&callback=initMap" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var map;
         var infoWindow;
+        var heatmap;
+
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 54.572062, lng: -362.601373},
                 zoom: 6
             });
 
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Show user's location on the map as a dot marker
+                    var userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    var dotIcon = {
+                        url: "https://maps.google.com/mapfiles/kml/shapes/placemark_circle.png",
+                        scaledSize: new google.maps.Size(20, 20),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(5, 5)
+                    };
+                    var marker = new google.maps.Marker({
+                        position: userLocation,
+                        icon: dotIcon,
+                        map: map
+                    });
+                    map.setCenter(userLocation);
+                }, function() {
+                    // Error: Display message to user
+                    console.log('Error: Could not get your location');
+                });
+            } else {
+                // Browser does not support Geolocation API
+                console.log('Error: Your browser does not support Geolocation');
+            }
+
+            var heatmapData = [];
+            var markers = [];
+
             for (var i = 0; i < locations.length; i++) {
                 var location = locations[i];
 
                 if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
+                    var latLng = new google.maps.LatLng(location.latitude, location.longitude);
+
+                    heatmapData.push(latLng);
+
                     var marker = new google.maps.Marker({
-                        position: {lat: location.latitude, lng: location.longitude},
-                        map: map,
+                        position: latLng,
+                        map: null, // set initially to null so that it's not added to the map
                         title: location.storeName,
                         data: location
                     });
 
+                    markers.push(marker);
+
                     infoWindow = new google.maps.InfoWindow();
 
                     marker.addListener('click', function() {
-                      // Close any existing info window
-                      infoWindow.close();
+                        // Close any existing info window
+                        infoWindow.close();
 
-                      // Set the content of the info window
-                      infoWindow = new google.maps.InfoWindow({
-                        content: '<h3 style="color: #3c3c3c;">' + this.data.storeName + '</h3>' +
-                                '<p style="color: #3c3c3c;">' + this.data.stock + '</p>'
-                      });
+                        // Set the content of the info window
+                        infoWindow = new google.maps.InfoWindow({
+                            content: '<h3 style="color: #3c3c3c;">' + this.data.storeName + '</h3>' +
+                                    '<p style="color: #3c3c3c;">' + this.data.stock + '</p>'
+                        });
 
-                      // Open the info window on the marker
-                      infoWindow.open(map, this);
+                        // Open the info window on the marker
+                        infoWindow.open(map, this);
                     });
                 } else {
                     console.error('Invalid latitude or longitude:', location);
                 }
             }
+
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: heatmapData,
+                radius: 50, // Set the radius of the heatmap points
+                map: map
+            });
+
+            // Add a button to toggle the markers on and off
+            var markerToggleButton = document.createElement('button');
+            markerToggleButton.textContent = 'Show/Hide Markers';
+            markerToggleButton.style.marginTop = '10px';
+            markerToggleButton.style.marginBottom = '10px';
+            markerToggleButton.addEventListener('click', function() {
+                markers.forEach(function(marker) {
+                    if (marker.getMap()) {
+                        marker.setMap(null);
+                    } else {
+                        marker.setMap(map);
+                    }
+                });
+            });
+
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(markerToggleButton);
         }
         document.getElementById("myForm").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -65,7 +129,7 @@
             document.getElementById("submitBtn").disabled = true; // Disable submit button
             // Make AJAX request to PHP script
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "test.php", true);
+            xhr.open("POST", "GetStock.php", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     // Hide overlay and loading spinner
@@ -73,18 +137,33 @@
                     document.getElementById("submitBtn").disabled = false; // Enable submit button
                     // Process PHP script response
                     locations = JSON.parse(xhr.responseText);
-                    console.log(locations); // Print response to console
+                    
+                    console.log(locations.stock); // Print locations to console
                     if (locations !== null) {
+                        // Get total stores with stock
+                        totalStores = locations.length
+                        console.log("Total stores output: " + totalStores)
+                        $('#numStoresWithStock').text(totalStores);
+
+                        // Get a sum of total stock
+                        totalStock = 0;
+                        for (i = 0; i < locations.length; i++) {
+                        stock = parseInt(locations[i].stock);
+                        if (!isNaN(stock)) {
+                            totalStock += stock;
+                            }
+                        }
+                        console.log("Total stock output: " + totalStock)
+                        $('#totalStock').text(totalStock);
+
+                        // Update the map
                         initMap()
                     }
-                    // Update result on page
-                    // document.getElementById("result").textContent = xhr.responseText;
                 }
             };
             xhr.send(new FormData(event.target));
         });
     </script>
-    <!-- Result output element -->
-    <div id="map"></div> <!-- Map container element -->
+    <div id="map"></div>
 </body>
 </html>

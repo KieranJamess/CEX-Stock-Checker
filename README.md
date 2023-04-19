@@ -16,6 +16,12 @@ At the time of writing this, it is hosted on [kdjames.co.uk](https://www.kdjames
 
 3. Get a UK map output of all the CEX stores that have stock of this item!
 
+### Demo
+
+See below for a GIF of the site being used, showing the statistic output, marker creation and heatmap.
+
+![](.\ezgif.com-crop.gif)
+
 ### Limitations
 
 - Currently the CEX API has blocked my home IP (ha) so it could happen to where I'm hosting the site. 

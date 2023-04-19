@@ -44,6 +44,9 @@ foreach ($storesData['response']['data']['stores'] as $store) {
             unset($store['regionName']);
             unset($store['regionImageUrls']);
             unset($store['phoneNumber']);
+            if ($stockLevel === "4+") {
+                $store['stock'] = "5";
+            }
             array_push($storesWithStock, $store);
         }
     }
@@ -53,3 +56,4 @@ $storesWithStock = json_encode($storesWithStock, true);
 print_r($storesWithStock);
 
 ?>
+
