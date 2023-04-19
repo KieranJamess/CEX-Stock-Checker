@@ -20,7 +20,7 @@ At the time of writing this, it is hosted on [kdjames.co.uk](https://www.kdjames
 
 See below for a GIF of the site being used, showing the statistic output, marker creation and heatmap.
 
-![](.\ezgif.com-crop.gif)
+![garfield-gif](https://github.com/KieranJamess/CEX-Stock-Checker/blob/master/demo.gif)
 
 ### Limitations
 
