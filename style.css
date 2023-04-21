@@ -1,66 +1,95 @@
 body {
-    font-family: "Montserrat", sans-serif;
-    color: #f7f5ef;
-    background-color: rgb(59,68,75); /* Update the background color here */
-    margin: 0;
-    padding: 0;
-  }
-
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #27272780; /* Update the background color here */
-    z-index: 999;
-  }
-  
-  /* CSS for loading spinner */
-  .spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: #fff;
-  }
-  
-  #map {
-    height: 80vh; /* Set the height of the map container */
-    width: 100%; /* Set the width of the map container */
-    margin-top: 20px; /* Add margin to separate the map from the form */
-  }
-
-  #myForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
+  font-family: "Montserrat", sans-serif;
+  color: #f7f5ef;
+  background-color: #3b444b;
+  margin: 0;
+  padding: 0;
 }
 
-label, input, #submitBtn {
-    margin-bottom: 10px; /* Add some spacing between the form elements */
-    padding: 10px 20px;
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #27272780; 
+  z-index: 999;
+}
+  
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+}
+  
+#map {
+  height: 80vh; 
+  width: 100%; 
+  margin-top: 20px; 
+}
+
+#myForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+label, input {
+  margin-bottom: 10px; 
+  padding: 10px 20px;
+  
+}
+
+#submitBtn {
+  background-color: #4e5a63;
+  border: none;
+  border-radius: 25px;
+  font-size: 12pt;
+  font-weight: 600;
+  transition: background-color 500ms ease-in-out, color 500ms ease-in-out, box-shadow 500ms ease-in-out;
+  color: #f7f5ef;
+}
+
+#submitBtn:hover {
+  background-color: #f7f5ef;
+  color: #4e5a63;
+  box-shadow: 0 0 10px #c2f8c2;
 }
 
 input[type="submit"] {
-    margin-top: 10px; /* Add some spacing above the submit button */
+  margin-top: 10px; 
 }
 
 #inputData {
-    background-color: #f7f5ef; /* Set background color */
-    color: #000; /* Set text color */
-    border: none; /* Remove border */
-    padding: 10px; /* Add padding */
-    width: 60%; /* Set width to 100% */
+  background-color: #4e5a63;
+  color: #f7f5ef;
+  border: none; 
+  padding: 10px; 
+  width: 60%; 
+  border-radius: 25px;
 }
 
+#statsContainer {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+}
 
-#submitBtn:hover {
-    background-color: #a1a1a1; /* Change background color on hover */
-    /* Add additional styles for hover effect */
+#statsContainer p {
+  margin: 0;
+}
+
+#statsContainer span {
+  font-weight: bold;
 }
